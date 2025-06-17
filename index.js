@@ -19,21 +19,31 @@ app.get("/", function (req, res) {
 });
 
 app.get("/api/:date", (req, res) => {
-  let inputDate = req.params.date;
-  date = new Date(inputDate);
-
-  if (date.toString() == "Invalid Date") {
-    res.json({ error: "Invalid Date" });
+  let date = req.params.date;
+  if (date.includes("-")) {
+    date = new Date(date);
+    if (date.toString() == "Invalid Date") {
+      res.json({ error: "Invalid Date" });
+    } else {
+      let utcTime = date.toUTCString();
+      let unixTime = date.valueOf();
+      res.json({ unix: unixTime, utc: utcTime });
+    }
   } else {
-    let utcTime = date.toString();
-    let unixTime = date.valueOf();
-    res.json({ unix: unixTime, utc: utcTime });
+    date = new Date(parseInt(date));
+    if (date.toString() == "Invalid Date") {
+      res.json({ error: "Invalid Date" });
+    } else {
+      let utcTime = date.toUTCString();
+      let unixTime = date.valueOf();
+      res.json({ unix: unixTime, utc: utcTime });
+    }
   }
 });
 
-app.get("/api", (req, res) => {
-  newDate = new Date();
-  let utcTime = newDate.toString();
+app.get("/api", (res) => {
+  let newDate = new Date();
+  let utcTime = newDate.toUTCString();
   let unixTime = newDate.valueOf();
   res.json({ unix: unixTime, utc: utcTime });
 });
